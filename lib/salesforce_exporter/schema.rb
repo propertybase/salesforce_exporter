@@ -47,6 +47,11 @@ module SalesforceExporter
         base.merge!(size: [field["precision"], field["scale"]])
       end
 
+      # reference = field["referenceTo"].first
+      # if reference
+      #   base.merge!(table: Sequel.identifier(reference.to_sym))
+      # end
+
       if type == :integer
         base.merge!(size: field["digits"])
       end

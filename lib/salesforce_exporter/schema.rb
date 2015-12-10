@@ -64,20 +64,20 @@ module SalesforceExporter
 
     def self.type_mapping
       @_type_mapping ||= {
-        "email" => [:column, :varchar],
-        "double" => [:column, :decimal],
-        "int" => [:column, :integer],
-        "currency" => [:column, :decimal],
-        "url" => [:column, :string],
-        "id" => [:column, :varchar],
-        "date" => [:column, :date],
-        "datetime" => [:column, :datetime],
-        "reference" => [:foreign_key, :varchar],
-        "string" => [:column, :varchar],
-        "picklist" => [:column, :varchar],
-        "phone" => [:column, :varchar],
-        "boolean" => [:column, :bool],
-        "textarea" => [:column, :text],
+        "email" => [:column, "VARCHAR"],
+        "double" => [:column, "DECIMAL"],
+        "int" => [:column, "INTEGER"],
+        "currency" => [:column, "DECIMAL"],
+        "url" => [:column, "VARCHAR"],
+        "id" => [:column, "VARCHAR"],
+        "date" => [:column, "DATE"],
+        "datetime" => [:column, "DATETIME"],
+        "reference" => [:foreign_key, "VARCHAR"],
+        "string" => [:column, "VARCHAR"],
+        "picklist" => [:column, "VARCHAR"],
+        "phone" => [:column, "VARCHAR"],
+        "boolean" => [:column, "BOOLEAN"],
+        "textarea" => [:column, "TEXT"],
       }
     end
   end

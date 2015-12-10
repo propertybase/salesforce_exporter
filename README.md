@@ -37,10 +37,10 @@ client = SalesforceExporter.new(
 
 ### Export
 
-In order to start the export, you need to specify the objects and and the path of the sqlite database
+In order to start the export, you need to specify the objects and and SQLite connection string. The exporter will return the database object after finish.
 
 ```ruby
-client.export(objects: ["Contact", "Account"], to: "./tmp/export.db")
+db = client.export(objects: ["Contact", "Account"], to: "sqlite://test.db")
 ```
 
 ## Development

@@ -2,7 +2,7 @@ require "sequel"
 require "sqlite3"
 
 module SalesforceExporter
-  class Exporter
+  class Schema
     attr_reader :objects
     attr_reader :db
 
@@ -11,7 +11,7 @@ module SalesforceExporter
       @db = Sequel.connect(db)
     end
 
-    def export
+    def create
       objects.each do |object|
         columns = self.class.columns(object["fields"].reject{|f| f["calculated"] })
         db.create_table!(object["name"]) do
@@ -71,7 +71,7 @@ module SalesforceExporter
         "string" => [:column, :varchar],
         "picklist" => [:column, :varchar],
         "phone" => [:column, :varchar],
-        "boolean" => [:column, :boolean],
+        "boolean" => [:column, :bool],
         "textarea" => [:column, :text],
       }
     end

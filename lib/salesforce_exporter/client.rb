@@ -1,4 +1,5 @@
-require "salesforce_exporter/exporter"
+require "salesforce_exporter/schema"
+require "salesforce_exporter/sqlite_writer"
 
 module SalesforceExporter
   class Client
@@ -10,9 +11,8 @@ module SalesforceExporter
 
     def export(objects:, to:)
       object_descriptions = Array(objects).map { |o| sf_client.describe(o) }
-      SalesforceExporter::Exporter.new(object_descriptions, to).export
+      db = SalesforceExporter::Schema.new(object_descriptions, to).create
+      SalesforceExporter::SqliteWriter.new(sf_client, db, object_descriptions).write
     end
-
-    private
   end
 end

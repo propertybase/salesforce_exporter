@@ -11,9 +11,9 @@ module SalesforceExporter
       @db = Sequel.connect(db)
     end
 
-    def create
+    def create(constraints:)
       objects.each do |object|
-        columns = self.class.columns(object["fields"].reject{|f| f["calculated"] })
+        columns = self.class.columns(object["fields"].reject{|f| f["calculated"] }, constraints)
         db.create_table!(object["name"]) do
           columns.each do |column_definition|
             send(*column_definition)
@@ -29,18 +29,27 @@ module SalesforceExporter
       type_mapping.fetch(field["type"])
     end
 
-    def self.columns(fields)
-      fields.map { |f| column_options(f) }
+    def self.columns(fields, constraints)
+      fields.map { |f| column_options(f, constraints) }
     end
 
-    def self.column_options(field)
+    def self.column_options(field, constraints)
       method_name, _ = coulumn_type(field)
-      [method_name, field["name"], nil, options(field) ]
+      [method_name, field["name"], nil, options(field, constraints) ]
     end
 
-    def self.options(field)
+    def self.options(field, constraints)
       _, type = coulumn_type(field)
-      base = { unique: field["unique"], null: field["nillable"], type: type }
+      base = { type: type }
+
+      if constraints.include?(:not_null)
+        base.merge!(null: field["nillable"])
+      end
+
+      if constraints.include?(:unique)
+        base.merge!(unique: field["unique"])
+      end
+
       base.merge!(size: field["length"]) if field["length"] > 0
 
       if type == :decimal
@@ -68,6 +77,7 @@ module SalesforceExporter
         "double" => [:column, "DECIMAL"],
         "int" => [:column, "INTEGER"],
         "currency" => [:column, "DECIMAL"],
+        "percent" => [:column, "DECIMAL"],
         "url" => [:column, "VARCHAR"],
         "id" => [:column, "VARCHAR"],
         "date" => [:column, "DATE"],

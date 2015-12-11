@@ -13,7 +13,8 @@ module SalesforceExporter
     def write
       objects.each do |object|
         sf_client.query(self.class.build_query(object)).each do |row|
-          db[object["name"].to_sym] << row.attrs
+          puts "insert row: #{row.inspect}"
+          db[Sequel.identifier(object["name"].to_sym)] << row.attrs
         end
       end
       db

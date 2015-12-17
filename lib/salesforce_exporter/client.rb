@@ -9,9 +9,9 @@ module SalesforceExporter
       @sf_client = sf_client
     end
 
-    def export(objects:, to:)
+    def export(objects:, to:, constraints: [:not_null, :unique])
       object_descriptions = Array(objects).map { |o| sf_client.describe(o) }
-      db = SalesforceExporter::Schema.new(object_descriptions, to).create
+      db = SalesforceExporter::Schema.new(object_descriptions, to).create(constraints: constraints)
       SalesforceExporter::SqliteWriter.new(sf_client, db, object_descriptions).write
     end
   end
